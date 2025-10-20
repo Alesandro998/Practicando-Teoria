@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Examen Web: HTML, CSS, JS y PHP</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #0b0b0b;
+      color: #f1f1f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      color: #00ff88;
+      text-shadow: 0 0 10px #00ff8877;
+      margin-bottom: 1rem;
+    }
+    .quiz-box {
+      background: #1b1b1b;
+      padding: 2rem;
+      border-radius: 15px;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 0 20px #00ff8833;
+      font-size: 1.2rem;
+    }
+    .question {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+    .option {
+      display: block;
+      background: #222;
+      border: 2px solid #333;
+      margin: 0.7rem 0;
+      padding: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+      color: #eee;
+    }
+    .option:hover {
+      background: #00ff8844;
+      border-color: #00ff88;
+      transform: scale(1.02);
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 0.9rem 1.8rem;
+      font-size: 1.1rem;
+      border: none;
+      background: #00ff88;
+      color: #000;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #00cc6a;
+    }
+    #timer {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      color: #ff4081;
+      font-weight: bold;
+    }
+    #result {
+      font-size: 1.6rem;
+      text-align: center;
+      margin-top: 2rem;
+      color: #00e676;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 Examen Interactivo - HTML, CSS, JS y PHP</h1>
+  <div id="timer">Tiempo restante: 30:00</div>
+
+  <div class="quiz-box" id="quiz">
+    <div id="question-container"></div>
+    <button id="next-btn" onclick="nextQuestion()">Siguiente</button>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const preguntas = [
+      // ----- HTML -----
+      { q: "¿Qué significa HTML?", options: ["Hyper Trainer Marking Language", "Hyper Text Markup Language", "Hyper Text Markdown Language", "Hyper Tool Multi Language"], answer: 1 },
+      { q: "¿Cuál etiqueta se usa para un enlace?", options: ["&lt;link&gt;", "&lt;a&gt;", "&lt;href&gt;", "&lt;url&gt;"], answer: 1 },
+      { q: "¿Qué etiqueta se usa para imágenes?", options: ["&lt;picture&gt;", "&lt;image&gt;", "&lt;img&gt;", "&lt;src&gt;"], answer: 2 },
+      { q: "¿Qué atributo define el texto alternativo en una imagen?", options: ["title", "alt", "description", "src"], answer: 1 },
+      { q: "¿Qué etiqueta se usa para un párrafo?", options: ["&lt;div&gt;", "&lt;p&gt;", "&lt;text&gt;", "&lt;span&gt;"], answer: 1 },
+      { q: "¿Qué etiqueta define una tabla?", options: ["&lt;tbl&gt;", "&lt;table&gt;", "&lt;tab&gt;", "&lt;tbody&gt;"], answer: 1 },
+      { q: "¿Cuál etiqueta define un encabezado de nivel 1?", options: ["&lt;head1&gt;", "&lt;h1&gt;", "&lt;header&gt;", "&lt;heading&gt;"], answer: 1 },
+      { q: "¿Qué etiqueta define una lista ordenada?", options: ["&lt;ul&gt;", "&lt;ol&gt;", "&lt;li&gt;", "&lt;list&gt;"], answer: 1 },
+      { q: "¿Qué atributo se usa para abrir un enlace en una nueva pestaña?", options: ["new", "open", "target='_blank'", "tab"], answer: 2 },
+      { q: "¿Cuál etiqueta se usa para agrupar contenido genérico?", options: ["&lt;div&gt;", "&lt;span&gt;", "&lt;group&gt;", "&lt;section&gt;"], answer: 0 },
+
+      // ----- CSS -----
+      { q: "¿Qué significa CSS?", options: ["Creative Style Sheets", "Cascading Style Sheets", "Colorful Style Sheets", "Computer Style Sheets"], answer: 1 },
+      { q: "¿Qué propiedad cambia el color del texto?", options: ["text-color", "font-color", "color", "background-color"], answer: 2 },
+      { q: "¿Qué propiedad cambia el fondo?", options: ["bgcolor", "background", "fill", "background-style"], answer: 1 },
+      { q: "¿Qué propiedad cambia el tamaño del texto?", options: ["text-size", "font-size", "size", "font"], answer: 1 },
+      { q: "¿Qué unidad representa porcentaje en CSS?", options: ["em", "px", "%", "vh"], answer: 2 },
+      { q: "¿Qué propiedad se usa para alinear texto al centro?", options: ["text-align", "align", "center", "text-center"], answer: 0 },
+      { q: "¿Qué selector aplica estilos a todos los elementos?", options: ["*", "body", "html", "all"], answer: 0 },
+      { q: "¿Qué propiedad redondea los bordes?", options: ["border", "border-radius", "round-border", "border-curve"], answer: 1 },
+      { q: "¿Qué propiedad define la sombra del texto?", options: ["shadow", "text-shadow", "font-shadow", "box-shadow"], answer: 1 },
+      { q: "¿Cuál pseudo-clase aplica estilos cuando pasas el mouse?", options: [":select", ":hover", ":focus", ":active"], answer: 1 },
+
+      // ----- JavaScript -----
+      { q: "¿Qué significa JS?", options: ["Java Syntax", "JavaScript", "Just Script", "Join Script"], answer: 1 },
+      { q: "¿Qué función muestra un mensaje en pantalla?", options: ["alert()", "console()", "prompt()", "display()"], answer: 0 },
+      { q: "¿Cómo se declara una variable moderna?", options: ["var", "let", "int", "define"], answer: 1 },
+      { q: "¿Qué operador compara valores y tipos?", options: ["==", "===", "!=", "=>"], answer: 1 },
+      { q: "¿Qué método escribe en la consola?", options: ["write()", "log()", "console.log()", "document.write()"], answer: 2 },
+      { q: "¿Qué estructura repite un bloque de código mientras se cumpla una condición?", options: ["if", "for", "while", "case"], answer: 2 },
+      { q: "¿Qué función convierte un string a número?", options: ["parseString()", "toInt()", "parseInt()", "convert()"], answer: 2 },
+      { q: "¿Qué palabra clave detiene un bucle?", options: ["stop", "exit", "break", "pause"], answer: 2 },
+      { q: "¿Cómo se define una función?", options: ["func nombre()", "function nombre()", "define nombre()", "method nombre()"], answer: 1 },
+      { q: "¿Qué objeto representa el documento HTML?", options: ["html", "window", "document", "body"], answer: 2 },
+
+      // ----- PHP -----
+      { q: "¿Qué significa PHP?", options: ["Pretext Hyper Processor", "Personal Home Page", "Hypertext Preprocessor", "Program Hypertext Page"], answer: 2 },
+      { q: "¿Qué etiqueta se usa para código PHP?", options: ["&lt;php&gt;", "&lt;?php ?&gt;", "&lt;? ?&gt;", "&lt;script&gt;"], answer: 1 },
+      { q: "¿Qué superglobal envía datos por GET?", options: ["$_POST", "$_GET", "$_DATA", "$_REQUEST"], answer: 1 },
+      { q: "¿Qué función inicia una sesión?", options: ["session_begin()", "start_session()", "session_start()", "session_init()"], answer: 2 },
+      { q: "¿Qué operador concatena cadenas?", options: ["+", ".", "&", ","], answer: 1 },
+      { q: "¿Qué estructura recorre un array?", options: ["for", "while", "foreach", "loop"], answer: 2 },
+      { q: "¿Qué función verifica si una variable está definida?", options: ["empty()", "isset()", "isdef()", "check()"], answer: 1 },
+      { q: "¿Qué palabra define una constante?", options: ["const()", "define()", "constant()", "def()"], answer: 1 },
+      { q: "¿Qué superglobal maneja archivos subidos?", options: ["$_SERVER", "$_FILES", "$_UPLOAD", "$_DATA"], answer: 1 },
+      { q: "¿Qué comando destruye una sesión?", options: ["session_delete()", "session_unset()", "session_destroy()", "end_session()"], answer: 2 }
+    ];
+
+    let current = 0, score = 0, selected = null, tiempoRestante = 1800;
+    const timerEl = document.getElementById('timer');
+    const questionContainer = document.getElementById('question-container');
+    const nextBtn = document.getElementById('next-btn');
+    const resultEl = document.getElementById('result');
+
+    function cargarPregunta() {
+      if (current >= preguntas.length) {
+        finalizar();
+        return;
+      }
+      const p = preguntas[current];
+      let html = `<div class='question'><b>${current + 1}.</b> ${p.q}</div>`;
+      p.options.forEach((opt, i) => {
+        html += `<div class='option' onclick='seleccionar(${i})'>${opt}</div>`;
+      });
+      questionContainer.innerHTML = html;
+    }
+
+    function seleccionar(i) {
+      selected = i;
+      document.querySelectorAll('.option').forEach(o => o.style.background = '#222');
+      document.querySelectorAll('.option')[i].style.background = '#00ff8833';
+    }
+
+    function nextQuestion() {
+      if (selected === null) return alert("Selecciona una respuesta antes de continuar.");
+      if (selected === preguntas[current].answer) score++;
+      current++;
+      selected = null;
+      cargarPregunta();
+    }
+
+    function finalizar() {
+      questionContainer.style.display = "none";
+      nextBtn.style.display = "none";
+      resultEl.innerHTML = `✅ Examen finalizado<br>Tu puntaje: <b>${score} / ${preguntas.length}</b>`;
+      clearInterval(cronometro);
+    }
+
+    const cronometro = setInterval(() => {
+      tiempoRestante--;
+      const min = Math.floor(tiempoRestante / 60);
+      const sec = tiempoRestante % 60;
+      timerEl.textContent = `Tiempo restante: ${min}:${sec.toString().padStart(2, '0')}`;
+      if (tiempoRestante <= 0) finalizar();
+    }, 1000);
+
+    cargarPregunta();
+  </script>
+</body>
+</html>
